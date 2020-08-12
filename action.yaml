@@ -37,7 +37,7 @@ runs:
       shell: bash
     - name: Deploy
       run: |
-          gcloud container clusters get-credentials --internal-ip ${{ inputs.cluster-name }} --zone ${{ inputs.gcp-zone }} --project ${{ inputs.deployment-name }}
+          gcloud container clusters get-credentials --internal-ip ${{ inputs.cluster-name }} --zone ${{ inputs.gcp-zone }} --project ${{ inputs.project-name }}
           (cd kube/ && ~/kustomize edit set image ${{ inputs.image-tag }})
           ~/kustomize build kube | kubectl apply -f -
           kubectl rollout status deployment/${{ inputs.deployment-name }}
