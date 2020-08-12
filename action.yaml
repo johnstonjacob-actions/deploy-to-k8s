@@ -17,11 +17,6 @@ inputs:
   gcp-zone:
     description: 'Zone to target'
     required: true
-outputs:
-  rollout-status:
-    description: 'kubectl rollout status output'
-  services:
-    description: 'kubectl get services output'
 runs:
   using: 'composite'
   steps:
