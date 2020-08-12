@@ -14,9 +14,9 @@ inputs:
   deployment-name:
     description: 'Name of deployment'
     required: true
-    gcp-zone:
-      description: 'Zone to target'
-      required: true
+  gcp-zone:
+    description: 'Zone to target'
+    required: true
 outputs:
   rollout-status:
     description: 'kubectl rollout status output'
