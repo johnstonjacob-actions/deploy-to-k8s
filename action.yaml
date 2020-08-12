@@ -40,6 +40,6 @@ runs:
           gcloud container clusters get-credentials --internal-ip ${{ inputs.cluster-name }} --zone ${{ inputs.gcp-zone }} --project ${{ inputs.project-name }}
           (cd kube/ && ~/kustomize edit set image ${{ inputs.image-tag }})
           ~/kustomize build kube | kubectl apply -f -
-          kubectl rollout status deployment/${{ inputs.deployment-name }}
+          kubectl rollout status --timeout=15m deployment/${{ inputs.deployment-name }}
           kubectl get services -o wide
       shell: bash
