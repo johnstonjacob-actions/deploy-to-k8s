@@ -1,0 +1,42 @@
+name: 'AB Deploy to K8s'
+description: 'Create and Apply a deployment to target K8s cluster'
+inputs:
+  image-tag:
+    description: 'Full image tag'
+    required: true
+  project-name:
+    description: 'The target GCP project'
+    default: 'searchbertha-qa1'
+    required: true
+  cluster-name:
+    description: 'Target K8s cluster name'
+    required: true
+  deployment-name:
+    description: 'Name of deployment'
+    required: true
+    gcp-zone:
+      description: 'Zone to target'
+      required: true
+outputs:
+  rollout-status:
+    description: 'kubectl rollout status output'
+  services:
+    description: 'kubectl get services output'
+runs:
+  using: 'composite'
+  steps:
+    - run: |
+      alias python=python3
+      gcloud components install kubectl
+      shell: bash
+    - run: |
+        curl -o ~/kustomize --location https://github.com/kubernetes-sigs/kustomize/releases/download/v3.1.0/kustomize_3.1.0_linux_amd64
+        chmod +x ~/kustomize
+      shell: bash
+    - run: |
+        gcloud container clusters get-credentials --internal-ip ${{ inputs.cluster-name }} --zone ${{ inputs.gcp-zone }} --project ${{ inputs.deployment-name }}
+        (cd kube/ && ~/kustomize edit set image ${{ inputs.image-tag }})
+        ~/kustomize build kube | kubectl apply -f -
+        kubectl rollout status deployment/${{ inputs.deployment-name }}
+        kubectl get services -o wide
+      shell: bash
