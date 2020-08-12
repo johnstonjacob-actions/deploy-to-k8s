@@ -25,18 +25,21 @@ outputs:
 runs:
   using: 'composite'
   steps:
-    - run: |
-      alias python=python3
-      gcloud components install kubectl
+    - name: Install kubectl
+      run: |
+        alias python=python3
+        gcloud components install kubectl
       shell: bash
-    - run: |
+    - name: Install kustomize
+      run: |
         curl -o ~/kustomize --location https://github.com/kubernetes-sigs/kustomize/releases/download/v3.1.0/kustomize_3.1.0_linux_amd64
         chmod +x ~/kustomize
       shell: bash
-    - run: |
-        gcloud container clusters get-credentials --internal-ip ${{ inputs.cluster-name }} --zone ${{ inputs.gcp-zone }} --project ${{ inputs.deployment-name }}
-        (cd kube/ && ~/kustomize edit set image ${{ inputs.image-tag }})
-        ~/kustomize build kube | kubectl apply -f -
-        kubectl rollout status deployment/${{ inputs.deployment-name }}
-        kubectl get services -o wide
+    - name: Deploy
+      run: |
+          gcloud container clusters get-credentials --internal-ip ${{ inputs.cluster-name }} --zone ${{ inputs.gcp-zone }} --project ${{ inputs.deployment-name }}
+          (cd kube/ && ~/kustomize edit set image ${{ inputs.image-tag }})
+          ~/kustomize build kube | kubectl apply -f -
+          kubectl rollout status deployment/${{ inputs.deployment-name }}
+          kubectl get services -o wide
       shell: bash
