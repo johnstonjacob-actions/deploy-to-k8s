@@ -4,18 +4,20 @@ inputs:
   image-tag:
     description: 'Full image tag'
     required: true
+  deployment-name:
+    description: 'Name of deployment'
+    required: true
   project-name:
     description: 'The target GCP project'
     default: 'searchbertha-qa1'
     required: true
   cluster-name:
     description: 'Target K8s cluster name'
-    required: true
-  deployment-name:
-    description: 'Name of deployment'
+    default: 'basic-qa-cluster'
     required: true
   gcp-zone:
     description: 'Zone to target'
+    default: 'us-central1-a'
     required: true
 runs:
   using: 'composite'
